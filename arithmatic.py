@@ -1,5 +1,5 @@
 import math
-def add(a,b,counta,countb):
+def add(a, b, counta, countb, verbose=False): 
     #basic math first
     schoolCount=0
     frontEndCount=0
@@ -48,9 +48,10 @@ def add(a,b,counta,countb):
     compensationCount += 1
     result = total - best_adjustment
     compensationCount += 1
-    
-    print("Sum is", a+b, "traditional math takes",schoolCount ,"steps, compensation addition takes", compensationCount)
-    return
+    if verbose:                                       
+        print("Sum is", a + b, "traditional math takes", schoolCount, "steps, compensation addition takes", compensationCount)
+
+    return {"school": schoolCount, "compensation": compensationCount}
 #recursive function called when borrowing is nessacary nickyG is tempVar
 def borrow(array,num):
     if array[len(array)-num-1]!=0:
@@ -92,7 +93,7 @@ def sub(a,b,counta,countb):
             schoolMethod[len(schoolMethod)-x-1]=arrayA[len(arrayA)-x-1]-arrayB[len(arrayA)-x-1]
         schoolCount+=1
     print("The difference is", a-b, "the amount of steps it takes for traditional arithmatic is", schoolCount)
-    return
+    return {"school": schoolCount}
     
 
 def mult(a,b,counta,countb):
@@ -141,19 +142,18 @@ def mult(a,b,counta,countb):
         if carry2!=0:
             schoolCount+=1
     '''Russian peasent Multiplication'''
-    sum=0
-    russiaCount=0
-    chuda=a
-    chudb=b
-    while chuda>=1:
-        if chuda%2==1:
-            sum+=chudb
-            russiaCount+=1
-        chuda=chuda//2
-        chudb=chudb*2
-        russiaCount+=2
+    result = 0
+    russiaCount = 0
+    chuda, chudb = a, b
+    while chuda >= 1:
+        if chuda % 2 == 1:
+            russiaCount += add(result, chudb,len(str(result)) or 1,len(str(chudb)),verbose=False)["school"]
+            result += chudb
+        chuda //= 2
+        chudb *= 2
+        russiaCount += 2
     print("The product is", a*b, "the number of steps using traditional arthmatic is " ,schoolCount, "the number of steps using russian peasant multiplication is " ,russiaCount)
-    return
+    return {"school": schoolCount, "russian": russiaCount}
 def divy(a,b,counta,countb):
     #basic math first
     schoolCount=0
@@ -181,13 +181,13 @@ def divy(a,b,counta,countb):
             quotient[x]+=1
             schoolCount+=1
         schoolMethod[len(schoolMethod)-counta+x]=quotient[x]
-    print("The quotient is", a//b, "the number of steps in tradiational multiplication is", schoolCount, "if there is a remainder it is", remainder)
-    return
+    print("The quotient is", a//b, "the number of steps in tradiational division is", schoolCount, "if there is a remainder it is", remainder)
+    return {"school": schoolCount, "remainder": remainder}
 def calculate(a, b, operation):
     counta = len(str(a)) if a else 1
     countb = len(str(b)) if b else 1
     if operation in ('+', 'add'):
-        return add(a, b, counta, countb)
+        return add(a, b, counta, countb, verbose=True)
     elif operation in ('-', 'sub'):
         return sub(a, b, counta, countb)
     elif operation in ('*', 'mult'):
