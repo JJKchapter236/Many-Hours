@@ -1,24 +1,82 @@
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport" content="initial-scale=1, width=device-width">
-        <title>Arithmatic Speed Compaitor</title>
-    </head>
-    <body>
-        This is a simulator that allows you to compare the speeds of basic arithmatic (like addition, subtraction, multiplication, and division) using different arithmatic methods. This is done by counting the number of steps it takes for calculations which allows us to isolate the amount of time it takes for each type of calculation, allowing us to optimize arithmatic to create a new generation of little human calculators. By finding the optimal way to do math we can improve the process of doing arithmatic for every single person.
+<head>
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Arithmatic Speed Compaitor</title>
+    <style>
+        body { font-family: sans-serif; max-width: 850px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+        .row { display: flex; gap: .75rem; align-items: center; margin-top: 1rem; flex-wrap: wrap; }
+        input, select, button { padding: .5rem; font-size: 1rem; }
+        #output { background: #f4f4f4; padding: 1rem; border-radius: 6px;
+                  white-space: pre-wrap; word-break: break-word; min-height: 1.5em; margin-top: 1rem; }
+        #error { color: #b00020; font-weight: bold; margin-top: .5rem; }
+    </style>
+</head>
+<body>
+    <h1>Arithmatic Speed Compaitor</h1>
 
-        <br>
-        To use the simulator input the first number on the left, select the operation on the dropdown menu in the center and the input the second number on the right. You must put the larger number on the left for division and subtraction or it will not work. Also no negative numbers or decimals, thats too complicated.
-        <br><label for="topNumber">First Number</label>
-        <input type="number" id="topNumber" name="topNumber">
-        
+    <p>
+        This is a simulator that allows you to compare the speeds of basic arithmatic
+        (like addition, subtraction, multiplication, and division) using different
+        arithmatic methods. This is done by counting the number of steps it takes for
+        calculations which allows us to isolate the amount of time it takes for each
+        type of calculation, allowing us to optimize arithmatic to create a new
+        generation of little human calculators. By finding the optimal way to do math
+        we can improve the process of doing arithmatic for every single person.
+    </p>
 
-        <select name="operation" id="operation">
-        <option value="+">+</option>
-        <option value="-">-</option>
-        <option value="*">*</option>
-        <option value="/">/</option>
-        </select>
-        <label for="botNumber">Second Number</label>
-        <input type="number" id="botNumber" name="botNumber">
-    </body>
+    <p>
+        To use the simulator input the first number on the left, select the operation
+        on the dropdown menu in the center and the input the second number on the right.
+        You must put the larger number on the left for division and subtraction or it
+        will not work. Also no negative numbers or decimals, thats too complicated.
+    </p>
+
+    <form id="calcForm">
+        <div class="row">
+            <label for="topNumber">First Number</label>
+            <input type="number" id="topNumber" name="topNumber" min="0" required>
+
+            <select name="operation" id="operation">
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+            </select>
+
+            <label for="botNumber">Second Number</label>
+            <input type="number" id="botNumber" name="botNumber" min="0" required>
+
+            <button type="submit">Calculate</button>
+        </div>
+    </form>
+
+    <div id="error"></div>
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById('calcForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const outputEl = document.getElementById('output');
+            const errorEl  = document.getElementById('error');
+            outputEl.textContent = '';
+            errorEl.textContent  = '';
+
+            try {
+                const resp = await fetch('/calculate', {
+                    method: 'POST',
+                    body: new FormData(e.target)
+                });
+                const json = await resp.json();
+                if (json.error) {
+                    errorEl.textContent = json.error;
+                } else {
+                    outputEl.textContent = json.output;
+                }
+            } catch (err) {
+                errorEl.textContent = 'Request failed: ' + err;
+            }
+        });
+    </script>
+</body>
 </html>

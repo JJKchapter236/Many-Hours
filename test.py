@@ -211,19 +211,17 @@ def divy(a,b,counta,countb):
             print(schoolMethod[x], end="")
     print(" ", a//b, schoolCount, remainder)
     return
-def calculate(a,b):
-    counta=0
-    countb=0
-    ballsa=a
-    ballsb=b
-    while ballsa>0:
-        ballsa//= 10
-        counta+=1
-    while ballsb>0:
-        ballsb//= 10
-        countb+=1
-    mult(a,b,counta,countb)
-    return 
-def main():
-    calculate(64,128)
-main()
+def calculate(a, b, operation):
+    counta = len(str(a)) if a else 1
+    countb = len(str(b)) if b else 1
+    if operation in ('+', 'add'):
+        return add(a, b, counta, countb)
+    elif operation in ('-', 'sub'):
+        return sub(a, b, counta, countb)
+    elif operation in ('*', 'mult'):
+        return mult(a, b, counta, countb)
+    elif operation in ('/', 'div'):
+        return divy(a, b, counta, countb)
+    else:
+        return "Invalid operation"
+
