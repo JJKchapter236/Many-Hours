@@ -7,11 +7,10 @@ def add(a,b,counta,countb):
         arrayA=[0]*counta
         arrayB=[0]*counta
         schoolMethod=[0]*(counta+1)
-        frontEndMethod=[0]*(counta+1)
     else:
         arrayA=[0]*countb
         arrayB=[0]*countb
-        frontEndMethod=[0]*(countb+1)
+        schoolMethod=[0]*(countb+1)
     for x in range(counta):
         arrayA[len(arrayA)-x-1]=(a//pow(10,x))%10
     for x in range(countb):
@@ -38,19 +37,26 @@ def add(a,b,counta,countb):
                 print(schoolMethod[x], end="")
         else:
             print(schoolMethod[x], end="")
-    '''for front end method i will treat things as counts when i need to'''
-    runningTotal=0
-    pending=0
-    for x in range(len(arrayA)):
-        if pending>0:
-            frontEndCount+=1
-        temp=arrayA[x]*pow(10,(len(arrayA)-x-1))+arrayB[x]*pow(10,(len(arrayA)-x-1))+pending
-        frontEndCount+=1
-        if temp%pow(10,(len(arrayA)-x-1))!=0:
-            pending=(temp//pow(10,(len(arrayA)-x-3))%10)*pow(10,(len(arrayA)-x-1))
-            frontEndCount+=1
-        runningTotal+=temp-pending
-    print(" ", a+b, schoolCount, runningTotal)
+    compensationCount = 0
+    best_adjustment = None
+    place = 10
+    limit = 10 ** (counta + 1)          # one place beyond a's length
+    while place <= limit:
+        convenient = ((a + place - 1) // place) * place
+        adjustment = convenient - a
+        compensationCount += 1
+        if best_adjustment is None or abs(adjustment) < abs(best_adjustment):
+            best_adjustment = adjustment
+            compensationCount += 1
+        place *= 10
+    adjusted_a = a + best_adjustment
+    compensationCount += 1
+    total = adjusted_a + b
+    compensationCount += 1
+    result = total - best_adjustment
+    compensationCount += 1
+    
+    print(" ", a+b, schoolCount, result, compensationCount)
     return
 #recursive function called when borrowing is nessacary nickyG is tempVar
 def borrow(array,num):
@@ -155,7 +161,19 @@ def mult(a,b,counta,countb):
                 print(schoolMethod[x], end="")
         else:
             print(schoolMethod[x], end="")
-    print(" ", a*b, schoolCount)
+    '''Russian peasent Multiplication'''
+    sum=0
+    russiaCount=0
+    chuda=a
+    chudb=b
+    while chuda>=1:
+        if chuda%2==1:
+            sum+=chudb
+            russiaCount+=1
+        chuda=chuda//2
+        chudb=chudb*2
+        russiaCount+=2
+    print(" ", a*b, schoolCount, russiaCount, sum)
     return
 def divy(a,b,counta,countb):
     #basic math first
@@ -204,8 +222,8 @@ def calculate(a,b):
     while ballsb>0:
         ballsb//= 10
         countb+=1
-    add(a,b,counta,countb)
+    mult(a,b,counta,countb)
     return 
 def main():
-    calculate(12,345)
+    calculate(64,128)
 main()
