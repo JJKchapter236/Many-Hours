@@ -143,7 +143,42 @@ def mult(a,b,counta,countb):
             print(schoolMethod[x], end="")
     print(" ", a*b, schoolCount)
     return
-#def divy(a,b,counta,countb):
+def divy(a,b,counta,countb):
+    #basic math first
+    schoolCount=0
+    if counta>countb:
+        arrayA=[0]*counta
+        arrayB=[0]*countb
+        schoolMethod=[0]*(counta+countb)
+    else:
+        arrayA=[0]*countb
+        arrayB=[0]*countb
+        schoolMethod=[0]*(counta+countb)
+    for x in range(counta):
+        arrayA[len(arrayA)-x-1]=(a//pow(10,x))%10
+    for x in range(countb):
+        arrayB[len(arrayB)-x-1]=(b//pow(10,x))%10
+    print(a, b, counta, countb, arrayA, arrayB)
+    '''count goes up for each time you check against the number,
+    each time digits are subtracted and other stuff'''
+    remainder=0
+    quotient=[0]*counta
+    for x in range(counta):
+        remainder=remainder*10+arrayA[len(arrayA)-counta+x]
+        schoolCount+=1
+        while remainder>=b:
+            remainder-=b
+            quotient[x]+=1
+            schoolCount+=1
+        schoolMethod[len(schoolMethod)-counta+x]=quotient[x]
+    for x in range(len(schoolMethod)):
+        if x==0:
+            if schoolMethod[x]!=0:
+                print(schoolMethod[x], end="")
+        else:
+            print(schoolMethod[x], end="")
+    print(" ", a//b, schoolCount, remainder)
+    return
 def calculate(a,b):
     counta=0
     countb=0
@@ -158,5 +193,5 @@ def calculate(a,b):
     mult(a,b,counta,countb)
     return 
 def main():
-    calculate(500,3724)
+    calculate(12,345)
 main()
