@@ -40,17 +40,39 @@ def add(a, b, counta, countb, verbose=False):
         compensationCount += 1
         if best_adjustment is None or abs(adjustment) < abs(best_adjustment):
             best_adjustment = adjustment
-            compensationCount += 1
         place *= 10
     adjusted_a = a + best_adjustment
-    compensationCount += 1
-    total = adjusted_a + b
-    compensationCount += 1
+    countAdjusted = len(str(adjusted_a)) if adjusted_a else 1
+    if countAdjusted>countb:
+        arrayA=[0]*countAdjusted
+        arrayB=[0]*countAdjusted
+        schoolMethod=[0]*(countAdjusted+1)
+    else:
+        arrayA=[0]*countb
+        arrayB=[0]*countb
+        schoolMethod=[0]*(countb+1)
+    for x in range(countAdjusted):
+        arrayA[len(arrayA)-x-1]=(adjusted_a//pow(10,x))%10
+    for x in range(countb):
+        arrayB[len(arrayB)-x-1]=(b//pow(10,x))%10
+    carry=0
+    for x in range(len(arrayA)):
+        if carry!=0:
+            compensationCount+=1
+        var=arrayA[len(arrayA)-x-1]+arrayB[len(arrayA)-x-1]+carry
+        carry=var//10
+        if carry>=1:
+            compensationCount+=1
+        schoolMethod[len(schoolMethod)-x-1]=var%10
+        compensationCount+=1
+    schoolMethod[0]=carry
+    total = 0
+    for d in schoolMethod:
+        total = total * 10 + d
     result = total - best_adjustment
     compensationCount += 1
     if verbose:                                       
         print("Sum is", a + b, "traditional math takes", schoolCount, "steps, compensation addition takes", compensationCount)
-
     return {"school": schoolCount, "compensation": compensationCount}
 #recursive function called when borrowing is nessacary nickyG is tempVar
 def borrow(array,num):
